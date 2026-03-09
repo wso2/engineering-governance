@@ -1,0 +1,53 @@
+name: Dependency Registry Gatekeeper
+
+on:
+  pull_request:
+    paths:
+      - 'dependency-registry/*.yaml'
+      - '.github/workflows/registry-gatekeeper.yml'
+
+jobs:
+  # 1. Catch basic YAML syntax and indentation errors
+  yaml-lint:
+    name: Lint YAML Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: dependency-registry/
+          config_data: |
+            extends: default
+            rules:
+              document-start: disable
+              line-length: disable
+
+  # 2. Enforce our strict architectural schema
+  schema-validation:
+    name: Validate Against Schema
+    runs-on: ubuntu-latest
+    needs: yaml-lint # Only run if basic linting passes
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Java Registry
+        uses: python-jsonschema/check-jsonschema@v3
+        with:
+          file: dependency-registry/java.yaml
+          schema: dependency-registry/dependency-registry.schema.yaml
+
+      - name: Validate JavaScript Registry
+        uses: python-jsonschema/check-jsonschema@v3
+        with:
+          file: dependency-registry/javascript.yaml
+          schema: dependency-registry/dependency-registry.schema.yaml
+
+      - name: Validate Go Registry
+        uses: python-jsonschema/check-jsonschema@v3
+        with:
+          file: dependency-registry/go.yaml
+          schema: dependency-registry/dependency-registry.schema.yaml
