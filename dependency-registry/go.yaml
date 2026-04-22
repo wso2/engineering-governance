@@ -1,0 +1,290 @@
+# yaml-language-server: $schema=./schema.yaml
+language: go
+dependencies:
+  - module: golang.org/x/crypto
+    versions:
+      - version: ">=v0.31.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-webauthn/webauthn
+    versions:
+      - version: ">=v0.15.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/golang-jwt/jwt/v5
+    versions:
+      - version: ">=v5.3.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/MicahParks/jwkset
+    versions:
+      - version: ">=v0.11.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/MicahParks/keyfunc/v3
+    versions:
+      - version: ">=v3.7.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/casbin/casbin/v2
+    versions:
+      - version: ">=v2.135.0"
+        allowed_scopes:
+          - "*"
+
+  - module: google.golang.org/protobuf
+    versions:
+      - version: ">=v1.36.11"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/jackc/pgx/v5
+    versions:
+      - version: ">=v5.8.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/lib/pq
+    versions:
+      - version: ">=v1.10.9"
+        allowed_scopes:
+          - "*"
+
+  - module: modernc.org/sqlite
+    versions:
+      - version: ">=v1.37.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/mattn/go-sqlite3
+    versions:
+      - version: ">=v1.14.32"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/jmoiron/sqlx
+    versions:
+      - version: ">=v1.4.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/redis/go-redis/v9
+    versions:
+      - version: ">=v9.17.3"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/milvus-io/milvus/client/v2
+    versions:
+      - version: ">=v2.6.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/v2
+    versions:
+      - version: ">=v2.3.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/providers/env
+    versions:
+      - version: ">=v1.1.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/providers/file
+    versions:
+      - version: ">=v1.2.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/parsers/yaml
+    versions:
+      - version: ">=v1.1.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/parsers/toml/v2
+    versions:
+      - version: ">=v2.2.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/providers/confmap
+    versions:
+      - version: ">=v1.0.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/knadh/koanf/providers/structs
+    versions:
+      - version: ">=v1.0.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/kelseyhightower/envconfig
+    versions:
+      - version: ">=v1.4.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-viper/mapstructure/v2
+    versions:
+      - version: ">=v2.4.0"
+        allowed_scopes:
+          - "*"
+
+  - module: go.opentelemetry.io/otel
+    versions:
+      - version: ">=v1.39.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/prometheus/client_golang
+    versions:
+      - version: ">=v1.23.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/goccy/go-json
+    versions:
+      - version: ">=v0.10.5"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/tidwall/sjson
+    versions:
+      - version: ">=v1.2.5"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/evanphx/json-patch/v5
+    versions:
+      - version: ">=v5.9.11"
+        allowed_scopes:
+          - "*"
+
+  - module: gopkg.in/yaml.v3
+    versions:
+      - version: ">=v3.0.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/google/jsonschema-go
+    versions:
+      - version: ">=v0.4.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-playground/validator/v10
+    versions:
+      - version: ">=v10.30.1"
+        allowed_scopes:
+          - "*"
+
+  - module: sigs.k8s.io/yaml
+    versions:
+      - version: ">=v1.4.0"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/client-go
+    versions:
+      - version: ">=v0.33.3"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/kube-openapi
+    versions:
+      - version: "v0.0.0-20260414162039-ec9c827d403f"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/utils
+    versions:
+      - version: "v0.0.0-20260319190234-28399d86e0b5"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/spf13/cobra
+    versions:
+      - version: ">=v1.10.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-git/go-git/v5
+    versions:
+      - version: ">=v5.16.5"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/google/cel-go
+    versions:
+      - version: ">=v0.26.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/pb33f/libopenapi
+    versions:
+      - version: ">=v0.28.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/getkin/kin-openapi
+    versions:
+      - version: ">=v0.133.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/modelcontextprotocol/go-sdk
+    versions:
+      - version: ">=v1.2.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/stretchr/testify
+    versions:
+      - version: ">=v1.11.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/DATA-DOG/go-sqlmock
+    versions:
+      - version: ">=v1.5.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/google/go-cmp
+    versions:
+      - version: ">=v0.7.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/onsi/ginkgo/v2
+    versions:
+      - version: ">=v2.28.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/onsi/gomega
+    versions:
+      - version: ">=v1.39.1"
+        allowed_scopes:
+          - "*"
+
+  - module: golang.org/x/text
+    versions:
+      - version: ">=v0.31.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/google/uuid
+    versions:
+      - version: ">=v1.6.0"
+        allowed_scopes:
+          - "*"
