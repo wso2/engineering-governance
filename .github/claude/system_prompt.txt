@@ -25,11 +25,10 @@ dependencies:
 2. **Compare YAML**: Identify NEW, UPDATED, or REMOVED modules
 3. **Analyze Each Changed Module**:
    - **Show the exact entry** added/updated in the PR (module, version constraint, allowed_scopes)
-   - Check pkg.go.dev for package info
-   - Check pkg.go.dev/vuln for vulnerabilities
+   - Check pkg.go.dev for package info and vulnerabilities
    - Check GitHub repository and license
    - Validate version constraints exclude vulnerable versions
-   - For NEW modules, analyze **ALL transitive dependencies** and check each for vulnerabilities
+   - For NEW and UPDATED modules, analyze **ALL transitive dependencies** and check each for vulnerabilities
 
 4. **Calculate Security Status**:
    - Count how many dependencies have security issues (direct CVEs OR transitive CVEs)
@@ -66,14 +65,15 @@ For EVERY dependency that is **ADDED or UPDATED**, provide:
 - **CRITICAL**: Always fetch the most recent version data - do not use outdated information
 
 ### Security Posture
-- Check https://pkg.go.dev/vuln/[module-path]
+- Check the package's pkg.go.dev page (e.g., https://pkg.go.dev/[module-path]) which displays known vulnerabilities
+- For vulnerability details, use https://vuln.go.dev/ID/GO-YYYY-NNNN.json or https://pkg.go.dev/vuln/GO-YYYY-NNNN
 - Verify version constraint **excludes** vulnerable versions
-- List ALL CVEs: ID, Severity, Affected versions, CVSS
+- List ALL CVEs/GO-IDs: ID, Severity, Affected versions, CVSS
 - **Do NOT include "Fixed in" version or PR information**
-- **MUST include direct links to each CVE for this specific dependency** in the References section (e.g., https://nvd.nist.gov/vuln/detail/CVE-XXXX-XXXXX or https://osv.dev/vulnerability/GO-XXXX-XXXX)
+- **MUST include direct links to each CVE/GO-ID for this specific dependency** in the References section (e.g., https://nvd.nist.gov/vuln/detail/CVE-XXXX-XXXXX, https://pkg.go.dev/vuln/GO-YYYY-NNNN, or https://osv.dev/vulnerability/GO-YYYY-NNNN)
 
 ### Transitive Dependencies
-- For NEW modules: **Check ALL transitive dependencies for vulnerabilities**
+- For NEW and UPDATED modules: **Check ALL transitive dependencies for vulnerabilities** (version constraint updates can change resolved transitive dependencies)
 - **ONLY list transitive dependencies that have security issues**
 - If all transitive dependencies are secure, just state the total count: "[X] transitive dependencies analyzed, all secure"
 - **Flag vulnerable transitive dependencies** with CVE details (ID, severity, affected versions)
@@ -123,12 +123,10 @@ allowed_scopes: ["*"]
 
 #### CVE-2024-12345 - High Severity (CVSS 8.1)
 - **Affects**: v1.0.0 - v1.2.2
-- **Fixed in**: v1.2.3
 - **Description**: [Brief description]
 
 #### CVE-2024-67890 - Medium Severity (CVSS 5.3)
 - **Affects**: v1.1.0 - v1.2.0
-- **Fixed in**: v1.2.1
 - **Description**: [Brief description]
 
 [...additional CVEs]
@@ -145,9 +143,8 @@ allowed_scopes: ["*"]
 - **Repository**: https://github.com/example/package (must be the actual repository for this specific dependency)
 - **Documentation**: https://pkg.go.dev/github.com/example/package (must be the actual pkg.go.dev page for this specific dependency)
 - **License**: https://github.com/example/package/blob/main/LICENSE (must link to the actual license file for this specific dependency)
-- **Vulnerabilities Database**: https://pkg.go.dev/vuln/github.com/example/package (must be the actual vulnerability page for this specific dependency)
-- **CVE-2024-12345**: https://nvd.nist.gov/vuln/detail/CVE-2024-12345 (only include if this CVE affects this specific dependency)
-- **CVE-2024-67890**: https://nvd.nist.gov/vuln/detail/CVE-2024-67890 (only include if this CVE affects this specific dependency)
+- **CVE-2024-12345**: https://nvd.nist.gov/vuln/detail/CVE-2024-12345 or https://pkg.go.dev/vuln/GO-2024-12345 (only include if this CVE/GO-ID affects this specific dependency)
+- **CVE-2024-67890**: https://nvd.nist.gov/vuln/detail/CVE-2024-67890 or https://pkg.go.dev/vuln/GO-2024-67890 (only include if this CVE/GO-ID affects this specific dependency)
 
 Note: All links must be specific to the dependency being analyzed. Do not include generic or example links.
 
