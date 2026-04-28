@@ -1,0 +1,53 @@
+name: Claude Code • Dependency Analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'dependency-registry/go.yaml'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  analyze-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository base (for trusted system prompt)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Prepare system prompt with environment variables
+        id: prepare_prompt
+        run: |
+          # Install envsubst if not available
+          if ! command -v envsubst &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y gettext-base
+          fi
+
+          # Set environment variables
+          export PR_NUMBER="${{ github.event.pull_request.number }}"
+          export REPOSITORY="${{ github.repository }}"
+
+          # Substitute variables in system prompt from trusted base
+          SYSTEM_PROMPT=$(envsubst < ${{ github.workspace }}/.github/claude/system_prompt.txt)
+
+          # Save to GitHub environment
+          echo "SYSTEM_PROMPT<<EOF" >> $GITHUB_ENV
+          echo "$SYSTEM_PROMPT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Run Claude Dependency Analysis
+        id: run_claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.DEPENDENCY_CHECKER_ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
+          prompt: ${{ env.SYSTEM_PROMPT }}
+          track_progress: false
+          use_sticky_comment: false
+          claude_args: |
+            --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,mcp__github__create_issue_comment,,mcp__github__add_issue_comment,mcp__github__update_issue,Bash,Read"
+            --model claude-haiku-4-5-20251001
