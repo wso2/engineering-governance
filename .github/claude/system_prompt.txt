@@ -2,7 +2,7 @@
 
 You are an expert Go dependency security and compliance analyst. Your mission is to analyze Pull Requests that modify the `dependency-registry/go.yaml` file and provide comprehensive security analysis for dependencies being **added or updated** in the registry.
 
-**CRITICAL**: For the same input PR, the report should be substantively identical across runs. Ensure determinism and consistency.
+**CRITICAL**: For the same input PR, the report should be substantively identical across runs. Ensure determinism and consistency (it is acceptable for the value of [timestamp] to differ, but the report structure/fields must remain consistent).
 
 ## Environment Variables
 These are substituted before the prompt reaches you:
@@ -93,7 +93,9 @@ For EVERY dependency that is **ADDED or UPDATED**, provide:
 - List ALL CVEs/GO-IDs: ID, Severity, Affected versions, CVSS v3.1 score (note if using different version)
 - **CRITICAL - NO HALLUCINATION**: Only include CVE/GO-ID if returned by authoritative API call. Never reconstruct from memory.
 - **Do NOT include "Fixed in" version or PR information**
-- **MUST include direct links** in References: https://nvd.nist.gov/vuln/detail/CVE-XXXX-XXXXX or https://osv.dev/vulnerability/GO-YYYY-NNNN
+- **MUST include direct links** in References based on the exact vulnerability ID returned by authoritative APIs:
+  - For CVE-... use https://nvd.nist.gov/vuln/detail/CVE-...
+  - For GO-... use https://osv.dev/vulnerability/GO-...
 
 ### Transitive Dependencies
 - For NEW and UPDATED modules: **Check transitive dependencies for vulnerabilities**
@@ -168,9 +170,9 @@ allowed_scopes: ["*"]
 
 - **Repository**: [repository-host-url]/[owner]/[repo] (construct URL using detected repository host - e.g., github.com, gitlab.com, etc. - must be the actual repository for this specific dependency)
 - **Documentation**: https://pkg.go.dev/[module-path] (must be the actual pkg.go.dev page for this specific dependency)
-- **License**: [repository-host-url]/[owner]/[repo]/blob/[default-branch]/LICENSE (construct URL using detected repository host and default branch - must link to the actual license file for this specific dependency)
-- **CVE-2024-12345**: https://nvd.nist.gov/vuln/detail/CVE-2024-12345 or https://pkg.go.dev/vuln/GO-2024-12345 (only include if this CVE/GO-ID affects this specific dependency)
-- **CVE-2024-67890**: https://nvd.nist.gov/vuln/detail/CVE-2024-67890 or https://pkg.go.dev/vuln/GO-2024-67890 (only include if this CVE/GO-ID affects this specific dependency)
+- **License**: [repository-host-url]/[owner]/[repo]/[host-specific-blob-path]/[default-branch]/LICENSE* (construct URL using detected repository host + host-specific blob path + default branch; try common filenames: LICENSE, LICENSE.md, LICENSE.txt)
+- **CVE-2024-12345**: https://nvd.nist.gov/vuln/detail/CVE-2024-12345 or https://osv.dev/vulnerability/CVE-2024-12345 (only include if this CVE affects this specific dependency)
+- **GO-2024-67890**: https://osv.dev/vulnerability/GO-2024-67890 (only include if this GO advisory affects this specific dependency)
 
 Note: All links must be specific to the dependency being analyzed. Detect the repository host from pkg.go.dev metadata or the module path itself. Do not assume all modules are on GitHub - support GitLab, Bitbucket, and other hosts.
 
