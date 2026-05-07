@@ -1,0 +1,17 @@
+name: Notify on Dependency Registry Change Request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'dependency-registry/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to Google Chat
+        run: |
+          curl -X POST -H 'Content-Type: application/json' \
+          -d "{\"text\": \"🚨 *Dependency Registry Change Detected*\n\n📋 *PR Details:*\n• PR #: ${{ github.event.pull_request.number }}\n• Title: ${{ github.event.pull_request.title }}\n• Author: @${{ github.event.pull_request.user.login }}\n• Link: ${{ github.event.pull_request.html_url }}\"}" \
+          ${{ secrets.DEPENDENCY_REGISTRY_NOTIFICATION_WEBHOOK_URL }}
