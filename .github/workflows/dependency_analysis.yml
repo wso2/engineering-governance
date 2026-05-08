@@ -49,5 +49,5 @@ jobs:
           track_progress: false
           use_sticky_comment: false
           claude_args: |
-            --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,mcp__github__create_issue_comment,,mcp__github__add_issue_comment,mcp__github__update_issue,Bash,Read"
+            --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,mcp__github__create_issue_comment,mcp__github__add_issue_comment,mcp__github__update_issue,Read"
             --model claude-haiku-4-5-20251001
