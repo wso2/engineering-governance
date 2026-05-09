@@ -120,11 +120,11 @@ echo "Changed go.mod files:"
 echo "$CHANGED_GO_MODS"
 echo ""
 
-> /tmp/new_deps.txt
-> /tmp/updated_deps.txt
-> /tmp/unapproved_deps.txt
-> /tmp/validated_deps.txt
-> /tmp/all_deps_status.txt
+: > /tmp/new_deps.txt
+: > /tmp/updated_deps.txt
+: > /tmp/unapproved_deps.txt
+: > /tmp/validated_deps.txt
+: > /tmp/all_deps_status.txt
 
 for GO_MOD in $CHANGED_GO_MODS; do
     echo "Processing: $GO_MOD"
