@@ -1,11 +1,25 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
+
+YQ_VERSION="v4.44.3"
+if ! command -v yq >/dev/null 2>&1; then
+  echo "Installing yq ${YQ_VERSION}..."
+  mkdir -p "$HOME/.local/bin"
+  wget -qO "$HOME/.local/bin/yq" "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
+  chmod +x "$HOME/.local/bin/yq"
+  export PATH="$HOME/.local/bin:$PATH"
+fi
 
 BASE_SHA=$1
 HEAD_SHA=$2
 APPROVED_LIST=$3
 REQUIRED_SCOPE=$4
+
+if [ "$#" -ne 4 ] || [ -z "$BASE_SHA" ] || [ -z "$HEAD_SHA" ] || [ -z "$APPROVED_LIST" ] || [ -z "$REQUIRED_SCOPE" ]; then
+  echo "Usage: $0 <BASE_SHA> <HEAD_SHA> <APPROVED_LIST> <REQUIRED_SCOPE>" >&2
+  exit 2
+fi
 
 if [ ! -s "$APPROVED_LIST" ]; then
   echo "Approved dependency registry not found or empty: $APPROVED_LIST" >&2
@@ -24,10 +38,6 @@ echo "Head SHA: $HEAD_SHA"
 echo "Approved list: $APPROVED_LIST"
 echo "Required scope: $REQUIRED_SCOPE"
 echo ""
-
-echo "Installing yq..."
-wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-chmod +x /usr/local/bin/yq
 
 check_version_constraint() {
     local module=$1
@@ -99,7 +109,7 @@ check_single_constraint() {
     esac
 }
 
-CHANGED_GO_MODS=$(git diff --name-only $BASE_SHA $HEAD_SHA | grep 'go.mod$' || true)
+CHANGED_GO_MODS=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep 'go.mod$' || true)
 
 if [ -z "$CHANGED_GO_MODS" ]; then
     echo "No go.mod files were modified"
@@ -120,8 +130,8 @@ for GO_MOD in $CHANGED_GO_MODS; do
     echo "Processing: $GO_MOD"
     echo "----------------------------------------"
 
-    git show $BASE_SHA:$GO_MOD > /tmp/go.mod.old 2>/dev/null || touch /tmp/go.mod.old
-    git show $HEAD_SHA:$GO_MOD > /tmp/go.mod.new 2>/dev/null || continue
+    git show "$BASE_SHA:$GO_MOD" > /tmp/go.mod.old 2>/dev/null || touch /tmp/go.mod.old
+    git show "$HEAD_SHA:$GO_MOD" > /tmp/go.mod.new 2>/dev/null || continue
 
     awk '
       $1=="require" && $2=="(" { in_require=1; next }
