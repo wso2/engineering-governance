@@ -1,28 +1,55 @@
 name: Notify on Dependency Registry Change Request
-
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
     paths:
       - 'dependency-registry/**'
-
 jobs:
   notify:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
     - name: Send notification to Google Chat
       env:
         PR_TITLE: ${{ github.event.pull_request.title }}
         PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         PR_URL: ${{ github.event.pull_request.html_url }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_ACTION: ${{ github.event.action }}
+        PR_MERGED: ${{ github.event.pull_request.merged }}
+        WEBHOOK_URL: ${{ secrets.DEPENDENCY_REGISTRY_NOTIFICATION_WEBHOOK_URL }}
       run: |
+        case "$PR_ACTION" in
+          opened)
+            header="🚨 *Dependency Registry Change Request*"
+            ;;
+          synchronize)
+            header="🔄 *PR updated*"
+            ;;
+          reopened)
+            header="♻️ *PR reopened*"
+            ;;
+          closed)
+            if [ "$PR_MERGED" = "true" ]; then
+              header="✅ *PR merged*"
+            else
+              header="❌ *PR closed*"
+            fi
+            ;;
+        esac
+
         body=$(jq -n \
+          --arg header "$header" \
           --arg title "$PR_TITLE" \
           --arg author "$PR_AUTHOR" \
           --arg url "$PR_URL" \
-          '{text: ("🚨 *Dependency Registry Change Detected*\n\n📋 *PR Details:*\n• Title: " + $title + "\n• Author: @" + $author + "\n• Link: " + $url)}')
-
+          --arg threadKey "pr-${PR_NUMBER}" \
+          '{
+             text: ($header + "\n• Title: " + $title + "\n• Author: @" + $author + "\n• Link: " + $url),
+             thread: { threadKey: $threadKey }
+           }')
         curl -X POST -H 'Content-Type: application/json' \
           --fail --silent --show-error \
+          --connect-timeout 10 --max-time 30 \
           -d "$body" \
-          "${{ secrets.DEPENDENCY_REGISTRY_NOTIFICATION_WEBHOOK_URL }}"
+          "${WEBHOOK_URL}&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD"
