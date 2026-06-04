@@ -1,18 +1,19 @@
 name: Claude Code • Dependency Analysis
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
     paths:
       - 'dependency-registry/go.yaml'
 
-permissions:
-  pull-requests: write
-  contents: read
+permissions: {}
 
 jobs:
   analyze-dependencies:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout repository base (for trusted system prompt)
         uses: actions/checkout@v4
