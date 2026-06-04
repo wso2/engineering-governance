@@ -87,7 +87,7 @@ The `allowed_scopes` field determines which WSO2 products or components are perm
 * `api-platform`
 * `choreo`
 * `identity-server`
-* `integrator-mi`
+* `integrator`
 * `moesif`
 * `openchoreo`
 * `thunder`
