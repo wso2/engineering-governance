@@ -1,3 +1,5 @@
+# SECURITY: Uses pull_request_target; do not checkout or execute PR code in this workflow.
+# Keep permissions: {} exactly as-is. Avoid adding actions/checkout here in the future.
 name: Claude Code • Dependency Analysis
 
 on:
