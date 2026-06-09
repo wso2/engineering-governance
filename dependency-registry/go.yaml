@@ -318,3 +318,8 @@ dependencies:
       - version: ">=v1.9.0"
         allowed_scopes:
           - "*"
+  - module: github.com/microsoft/go-mssqldb
+    versions:
+      - version: ">=v1.10.0"
+        allowed_scopes:
+          - "*"
