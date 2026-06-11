@@ -33,6 +33,8 @@ jobs:
           api-key: ${{ secrets.FOSSA_API_KEY }}
 ```
 
+If `working-directory` is omitted, the action scans from the repository root (`.`).
+
 ### Scan and test
 
 ```yaml
@@ -63,6 +65,8 @@ jobs:
           working-directory: apps/web
           run-tests: "true"
 ```
+
+Use `working-directory` only when you want to scope the scan to a subdirectory. If you do not pass it, the entire repository is scanned.
 
 ### Pull request diff gate
 
@@ -125,7 +129,7 @@ jobs:
 - `project`: Optional. Project name passed to FOSSA CLI.
 - `endpoint`: Optional. FOSSA endpoint URL. Default: `https://app.fossa.com`.
 - `debug`: Optional. Runs FOSSA commands in debug mode when set to `"true"`. Default: `"false"`.
-- `working-directory`: Optional. Directory to scan. Default: `.`.
+- `working-directory`: Optional. Directory to scan. Default: `.`. If omitted, the action scans the repository root.
 - `fail-on-vulnerabilities`: Optional. Enables the extra FOSSA issues API gate for active `high` and `critical` vulnerabilities. Default: `"false"`.
 - `repo-name`: Optional. Repository name used by the vulnerability API gate. Defaults to the current repository name.
 - `github-org`: Optional. Repository owner used by the vulnerability API gate. Defaults to the current repository owner.
@@ -148,6 +152,7 @@ For most repositories, use a single workflow and declare scan targets with a mat
 - Pass both `working-directory` and `project` for each component.
 - Use a stable project naming convention such as `repo/path` so each component is tracked as a separate FOSSA project.
 - Run all components on `main`, and optionally allow manual selection with `workflow_dispatch`.
+- If the repository should be scanned as a single unit, do not pass `working-directory`; the action will scan the entire repository.
 
 ### Example for a monorepo
 
@@ -274,6 +279,7 @@ If those differences do not exist, one workflow with a matrix is the recommended
 
 ### Operational guidance
 
+- If `working-directory` is not set, the scan runs from the repository root.
 - `working-directory` controls what folder is scanned.
 - `project` controls which FOSSA project receives the scan.
 - Use both together when the repository contains multiple components.
