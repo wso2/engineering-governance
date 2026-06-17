@@ -223,6 +223,36 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/charmbracelet/bubbles
+    versions:
+      - version: ">=v1.0.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/charmbracelet/bubbletea
+    versions:
+      - version: ">=v1.3.10"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/charmbracelet/huh
+    versions:
+      - version: ">=v1.0.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/charmbracelet/huh/spinner
+    versions:
+      - version: "=v0.0.0-20260223110133-9dc45e34a40b"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/charmbracelet/lipgloss
+    versions:
+      - version: ">=v1.1.0"
+        allowed_scopes:
+          - "*"
+
   - module: github.com/go-git/go-git/v5
     versions:
       - version: ">=v5.16.5"
