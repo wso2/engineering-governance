@@ -354,3 +354,8 @@ dependencies:
       - version: ">=v1.10.0"
         allowed_scopes:
           - "*"
+  - module: github.com/maypok86/otter
+    versions:
+      - version: ">=v2.3.0"
+        allowed_scopes:
+          - "*"
