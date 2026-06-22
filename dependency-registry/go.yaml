@@ -354,3 +354,9 @@ dependencies:
       - version: ">=v1.10.0"
         allowed_scopes:
           - "*"
+
+  - module: github.com/cucumber/godog
+    versions:
+      - version: ">=v0.15.0"
+        allowed_scopes:
+          - "*"
