@@ -109,6 +109,21 @@ check_single_constraint() {
     esac
 }
 
+INTERNAL_MODULES=""
+while IFS= read -r gomod_file; do
+    module_path=$(git show "$HEAD_SHA:$gomod_file" 2>/dev/null | awk '$1=="module" {print $2; exit}')
+    if [ -n "$module_path" ]; then
+        INTERNAL_MODULES="$INTERNAL_MODULES"$'\n'"$module_path"
+    fi
+done < <(git ls-tree -r "$HEAD_SHA" --name-only | grep 'go\.mod$')
+INTERNAL_MODULES=$(echo "$INTERNAL_MODULES" | sed '/^$/d')
+
+if [ -n "$INTERNAL_MODULES" ]; then
+    echo "Internal modules (will be skipped):"
+    echo "$INTERNAL_MODULES"
+    echo ""
+fi
+
 CHANGED_GO_MODS=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep 'go.mod$' || true)
 
 if [ -z "$CHANGED_GO_MODS" ]; then
@@ -157,6 +172,13 @@ for GO_MOD in $CHANGED_GO_MODS; do
 
     for MODULE in $NEW_DEPS; do
         VERSION=$(awk -v module="$MODULE" '$1==module {print $2; exit}' /tmp/deps.new)
+
+        if [ -n "$INTERNAL_MODULES" ] && printf '%s\n' "$INTERNAL_MODULES" | grep -Fxq "$MODULE"; then
+            echo "SKIPPED (internal): $MODULE $VERSION"
+            echo "SKIPPED|$MODULE|$VERSION|Internal module from same repository" >> /tmp/all_deps_status.txt
+            continue
+        fi
+
         echo "NEW: $MODULE $VERSION" | tee -a /tmp/new_deps.txt
 
         APPROVED_VERSIONS=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[].version" "$APPROVED_LIST" 2>/dev/null || echo "")
@@ -213,6 +235,12 @@ for GO_MOD in $CHANGED_GO_MODS; do
         NEW_VERSION=$(awk -v module="$MODULE" '$1==module {print $2; exit}' /tmp/deps.new)
 
         if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+            if [ -n "$INTERNAL_MODULES" ] && printf '%s\n' "$INTERNAL_MODULES" | grep -Fxq "$MODULE"; then
+                echo "SKIPPED (internal): $MODULE $OLD_VERSION -> $NEW_VERSION"
+                echo "SKIPPED|$MODULE|$NEW_VERSION (was $OLD_VERSION)|Internal module from same repository" >> /tmp/all_deps_status.txt
+                continue
+            fi
+
             echo "UPDATED: $MODULE $OLD_VERSION -> $NEW_VERSION" | tee -a /tmp/updated_deps.txt
 
             APPROVED_VERSIONS=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[].version" "$APPROVED_LIST" 2>/dev/null || echo "")
