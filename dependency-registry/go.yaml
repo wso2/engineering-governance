@@ -360,3 +360,9 @@ dependencies:
       - version: ">=v0.15.0"
         allowed_scopes:
           - "*"
+
+  - module: github.com/gin-gonic/gin
+    versions:
+      - version: ">=v1.11.0"
+        allowed_scopes:
+          - "*"
