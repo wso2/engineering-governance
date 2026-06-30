@@ -397,9 +397,9 @@ dependencies:
         allowed_scopes:
           - "*"
 
-  - module: github.com/go-pdf/fpdf
+  - module: codeberg.org/go-pdf/fpdf
     versions:
-      - version: ">=v0.9.0"
+      - version: ">=v0.12.0"
         allowed_scopes:
           - "*"
 
