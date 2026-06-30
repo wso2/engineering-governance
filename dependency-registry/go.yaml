@@ -360,3 +360,141 @@ dependencies:
       - version: ">=v0.15.0"
         allowed_scopes:
           - "*"
+
+  - module: github.com/aws/aws-sdk-go-v2
+    versions:
+      - version: ">=v1.42.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/aws/aws-sdk-go-v2/config
+    versions:
+      - version: ">=v1.32.18"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/aws/aws-sdk-go-v2/service/marketplaceentitlementservice
+    versions:
+      - version: ">=v1.38.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/aws/aws-sdk-go-v2/service/marketplacemetering
+    versions:
+      - version: ">=v1.36.5"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/aws/aws-sdk-go-v2/service/sqs
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/cloudevents/sdk-go/v2
+    versions:
+      - version: ">=v2.16.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-pdf/fpdf
+    versions:
+      - version: ">=v0.9.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/nats-io/nats.go
+    versions:
+      - version: ">=v1.48.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/nats-io/nats-server/v2
+    versions:
+      - version: ">=v2.12.4"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/oapi-codegen/runtime
+    versions:
+      - version: ">=v1.2.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/shopspring/decimal
+    versions:
+      - version: ">=v1.4.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/stripe/stripe-go/v85
+    versions:
+      - version: ">=v85.0.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/testcontainers/testcontainers-go
+    versions:
+      - version: ">=v0.40.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/testcontainers/testcontainers-go/modules/postgres
+    versions:
+      - version: ">=v0.40.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/joho/godotenv
+    versions:
+      - version: ">=v1.5.1"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/lestrrat-go/jwx/v2
+    versions:
+      - version: ">=v2.1.6"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/external-secrets/external-secrets
+    versions:
+      - version: ">=v0.19.2"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/go-logr/logr
+    versions:
+      - version: ">=v1.4.3"
+        allowed_scopes:
+          - "*"
+
+  - module: golang.org/x/sync
+    versions:
+      - version: ">=v0.16.0"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/api
+    versions:
+      - version: ">=v0.33.2"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/apimachinery
+    versions:
+      - version: ">=v0.33.2"
+        allowed_scopes:
+          - "*"
+
+  - module: k8s.io/apiextensions-apiserver
+    versions:
+      - version: ">=v0.33.2"
+        allowed_scopes:
+          - "*"
+
+  - module: sigs.k8s.io/controller-runtime
+    versions:
+      - version: ">=v0.21.0"
+        allowed_scopes:
+          - "*"
