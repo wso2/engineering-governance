@@ -411,7 +411,7 @@ dependencies:
 
   - module: github.com/nats-io/nats-server/v2
     versions:
-      - version: ">=v2.12.4"
+      - version: ">=v2.12.6"
         allowed_scopes:
           - wso2cloud
 
@@ -454,12 +454,6 @@ dependencies:
   - module: github.com/lestrrat-go/jwx/v2
     versions:
       - version: ">=v2.1.6"
-        allowed_scopes:
-          - wso2cloud
-
-  - module: github.com/external-secrets/external-secrets
-    versions:
-      - version: ">=v0.19.2"
         allowed_scopes:
           - wso2cloud
 
