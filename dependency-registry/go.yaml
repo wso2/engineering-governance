@@ -433,6 +433,12 @@ dependencies:
         allowed_scopes:
           - wso2cloud
 
+  - module: github.com/stripe/stripe-go/v86
+    versions:
+      - version: ">=v86.1.0"
+        allowed_scopes:
+          - wso2cloud
+
   - module: github.com/testcontainers/testcontainers-go
     versions:
       - version: ">=v0.40.0"
