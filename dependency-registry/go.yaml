@@ -145,6 +145,36 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: go.opentelemetry.io/otel/trace
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
+  - module: go.opentelemetry.io/otel/metric
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
+  - module: go.opentelemetry.io/otel/sdk
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
+  - module: go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
+  - module: go.opentelemetry.io/otel/exporters/stdout/stdouttrace
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - "*"
+
   - module: github.com/prometheus/client_golang
     versions:
       - version: ">=v1.23.2"
@@ -223,33 +253,27 @@ dependencies:
         allowed_scopes:
           - "*"
 
-  - module: github.com/charmbracelet/bubbles
+  - module: charm.land/bubbletea/v2
     versions:
-      - version: ">=v1.0.0"
+      - version: ">=v2.0.8"
         allowed_scopes:
           - "*"
 
-  - module: github.com/charmbracelet/bubbletea
+  - module: charm.land/bubbles/v2
     versions:
-      - version: ">=v1.3.10"
+      - version: ">=v2.1.1"
         allowed_scopes:
           - "*"
 
-  - module: github.com/charmbracelet/huh
+  - module: charm.land/huh/v2
     versions:
-      - version: ">=v1.0.0"
+      - version: ">=v2.0.3"
         allowed_scopes:
           - "*"
 
-  - module: github.com/charmbracelet/huh/spinner
+  - module: charm.land/lipgloss/v2
     versions:
-      - version: "=v0.0.0-20260223110133-9dc45e34a40b"
-        allowed_scopes:
-          - "*"
-
-  - module: github.com/charmbracelet/lipgloss
-    versions:
-      - version: ">=v1.1.0"
+      - version: ">=v2.0.5"
         allowed_scopes:
           - "*"
 
@@ -316,6 +340,12 @@ dependencies:
   - module: golang.org/x/text
     versions:
       - version: ">=v0.31.0"
+        allowed_scopes:
+          - "*"
+
+  - module: golang.org/x/net
+    versions:
+      - version: ">=v0.55.0"
         allowed_scopes:
           - "*"
 
