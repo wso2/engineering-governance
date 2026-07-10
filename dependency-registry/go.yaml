@@ -589,3 +589,33 @@ dependencies:
       - version: ">=v1.5.1"
         allowed_scopes:
           - api-platform
+
+  - module: google.golang.org/grpc
+    versions:
+      - version: ">=v1.82.0"
+        allowed_scopes:
+          - "*"
+
+  - module: github.com/testcontainers/testcontainers-go/modules/compose
+    versions:
+      - version: ">=v0.43.0"
+        allowed_scopes:
+          - api-platform
+
+  - module: go.opentelemetry.io/proto/otlp
+    versions:
+      - version: ">=v1.10.0"
+        allowed_scopes:
+          - "*"
+
+  - module: golang.org/x/term
+    versions:
+      - version: ">=v0.45.0"
+        allowed_scopes:
+          - api-platform
+
+  - module: golang.org/x/mod
+    versions:
+      - version: ">=v0.38.0"
+        allowed_scopes:
+          - api-platform
