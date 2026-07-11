@@ -509,12 +509,14 @@ dependencies:
     versions:
       - version: ">=v0.33.2"
         allowed_scopes:
+          - api-platform
           - wso2cloud
 
   - module: k8s.io/apimachinery
     versions:
       - version: ">=v0.33.2"
         allowed_scopes:
+          - api-platform
           - wso2cloud
 
   - module: k8s.io/apiextensions-apiserver
@@ -528,3 +530,9 @@ dependencies:
       - version: ">=v0.21.0"
         allowed_scopes:
           - wso2cloud
+
+  - module: sigs.k8s.io/gateway-api
+    versions:
+      - version: ">=v1.3.0"
+        allowed_scopes:
+          - api-platform
