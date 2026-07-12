@@ -349,6 +349,18 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: golang.org/x/mod
+    versions:
+      - version: ">=v0.35.0"
+        allowed_scopes:
+          - "*"
+
+  - module: golang.org/x/term
+    versions:
+      - version: ">=v0.43.0"
+        allowed_scopes:
+          - "*"
+
   - module: github.com/google/uuid
     versions:
       - version: ">=v1.6.0"
