@@ -396,12 +396,26 @@ dependencies:
       - version: ">=v1.42.0"
         allowed_scopes:
           - wso2cloud
+          - api-platform
 
   - module: github.com/aws/aws-sdk-go-v2/config
     versions:
       - version: ">=v1.32.18"
         allowed_scopes:
           - wso2cloud
+          - api-platform
+
+  - module: github.com/aws/aws-sdk-go-v2/credentials
+    versions:
+      - version: ">=v1.19.28"
+        allowed_scopes:
+          - api-platform
+
+  - module: github.com/aws/aws-sdk-go-v2/service/sts
+    versions:
+      - version: ">=v1.44.0"
+        allowed_scopes:
+          - api-platform
 
   - module: github.com/aws/aws-sdk-go-v2/service/marketplaceentitlementservice
     versions:
