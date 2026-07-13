@@ -391,6 +391,12 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/wso2/api-platform/sdk/core
+    versions:
+      - version: ">=v0.2.4"
+        allowed_scopes:
+          - "*"
+
   - module: github.com/aws/aws-sdk-go-v2
     versions:
       - version: ">=v1.42.0"
@@ -548,5 +554,11 @@ dependencies:
   - module: sigs.k8s.io/gateway-api
     versions:
       - version: ">=v1.3.0"
+        allowed_scopes:
+          - api-platform
+
+  - module: sigs.k8s.io/gateway-api/conformance
+    versions:
+      - version: ">=v1.5.1"
         allowed_scopes:
           - api-platform
