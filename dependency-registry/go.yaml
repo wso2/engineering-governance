@@ -349,6 +349,18 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/envoyproxy/go-control-plane/envoy
+    versions:
+      - version: ">=v1.36.0"
+        allowed_scopes:
+          - "api-platform"
+
+  - module: github.com/envoyproxy/go-control-plane
+    versions:
+      - version: ">=v0.14.0"
+        allowed_scopes:
+          - "api-platform"
+
   - module: github.com/google/uuid
     versions:
       - version: ">=v1.6.0"
@@ -470,6 +482,7 @@ dependencies:
       - version: ">=v1.2.0"
         allowed_scopes:
           - wso2cloud
+          - api-platform
 
   - module: github.com/shopspring/decimal
     versions:
