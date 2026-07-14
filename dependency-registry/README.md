@@ -91,7 +91,7 @@ The `allowed_scopes` field determines which WSO2 products or components are perm
 * `integrator`
 * `moesif`
 * `openchoreo`
-* `thunder`
+* `thunderid`
 * `wso2cloud`
 
 > **Note:** If a specific product or component is not yet represented, use your standard repository prefix in kebab-case (e.g., `api-manager`) when requesting a new scope in your PR.
