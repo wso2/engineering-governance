@@ -41,6 +41,7 @@ dependencies:
     versions:
       - version: ">=v1.6.4"
         allowed_scopes:
+          - identity-platform
           - thunderid
 
   - module: google.golang.org/protobuf
