@@ -43,6 +43,20 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: google.golang.org/api
+    versions:
+      - version: ">=v0.288.0"
+        allowed_scopes:
+          - identity-platform
+          - thunderid
+
+  - module: cloud.google.com/go/auth
+    versions:
+      - version: ">=v0.22.0"
+        allowed_scopes:
+          - identity-platform
+          - thunderid
+
   - module: github.com/jackc/pgx/v5
     versions:
       - version: ">=v5.8.0"
