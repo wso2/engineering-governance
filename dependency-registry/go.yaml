@@ -37,6 +37,12 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/cloudflare/circl
+    versions:
+      - version: ">=v1.6.4"
+        allowed_scopes:
+          - thunderid
+
   - module: google.golang.org/protobuf
     versions:
       - version: ">=v1.36.11"
