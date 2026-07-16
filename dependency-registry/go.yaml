@@ -7,6 +7,13 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/fxamacker/cbor/v2
+    versions:
+      - version: ">=v2.9.2"
+        allowed_scopes:
+          - identity-platform
+          - thunderid
+
   - module: github.com/go-webauthn/webauthn
     versions:
       - version: ">=v0.15.0"
