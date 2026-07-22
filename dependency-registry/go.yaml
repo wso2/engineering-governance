@@ -565,6 +565,7 @@ dependencies:
       - version: ">=v0.16.0"
         allowed_scopes:
           - wso2cloud
+          - agent-manager
 
   - module: k8s.io/api
     versions:
