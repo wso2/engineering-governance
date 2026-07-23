@@ -567,7 +567,7 @@ dependencies:
         allowed_scopes:
           - wso2cloud
           - agent-manager
-          
+
   - module: helm.sh/helm/v3
       versions:
         - version: ">=v3.21.3"
