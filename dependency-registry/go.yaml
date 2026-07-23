@@ -567,6 +567,12 @@ dependencies:
         allowed_scopes:
           - wso2cloud
           - agent-manager
+          
+  - module: helm.sh/helm/v3
+      versions:
+        - version: ">=v3.21.3"
+          allowed_scopes:
+            - api-platform
 
   - module: k8s.io/api
     versions:
@@ -581,6 +587,12 @@ dependencies:
         allowed_scopes:
           - api-platform
           - wso2cloud
+
+  - module: k8s.io/cli-runtime
+      versions:
+        - version: ">=v0.36.2"
+          allowed_scopes:
+            - api-platform
 
   - module: k8s.io/apiextensions-apiserver
     versions:
