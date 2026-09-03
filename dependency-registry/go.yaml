@@ -667,3 +667,9 @@ dependencies:
       - version: ">=v0.38.0"
         allowed_scopes:
           - api-platform
+
+  - module: github.com/klauspost/compress
+    versions:
+      - version: ">=v1.19.2"
+        allowed_scopes:
+          - api-platform
