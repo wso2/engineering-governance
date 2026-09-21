@@ -704,3 +704,9 @@ dependencies:
       - version: ">=v2.5.36"
         allowed_scopes:
           - "api-platform"
+
+  - module: github.com/moesif/moesifapi-go
+    versions:
+      - version: ">=v1.2.0"
+        allowed_scopes:
+          - "api-platform"
