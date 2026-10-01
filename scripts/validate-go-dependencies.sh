@@ -40,9 +40,8 @@ echo "Required scope: $REQUIRED_SCOPE"
 echo ""
 
 check_version_constraint() {
-    local module=$1
-    local version=$2
-    local constraint=$3
+    local version=$1
+    local constraint=$2
 
     if [[ "$constraint" == "pseudo" ]]; then
         if [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[0-9]{14}-[a-f0-9]{12}$ || \
@@ -57,7 +56,7 @@ check_version_constraint() {
         return 0
     fi
 
-    version_clean="${version#v}"
+    local version_clean="${version#v}"
 
     if [[ "$constraint" =~ \  ]]; then
         IFS=' ' read -ra CONSTRAINTS <<< "$constraint"
@@ -77,8 +76,8 @@ check_single_constraint() {
     local constraint=$2
 
     if [[ "$constraint" =~ ^(\>\=|\<\=|\>|\<|=)v?(.+)$ ]]; then
-        operator="${BASH_REMATCH[1]}"
-        constraint_version="${BASH_REMATCH[2]}"
+        local operator="${BASH_REMATCH[1]}"
+        local constraint_version="${BASH_REMATCH[2]}"
     else
         echo "Invalid constraint format: $constraint" >&2
         return 1
@@ -189,29 +188,24 @@ for GO_MOD in $CHANGED_GO_MODS; do
             echo "UNAPPROVED|$MODULE|$VERSION|Module not found in dependency registry" >> /tmp/all_deps_status.txt
         else
             MATCH_FOUND=false
-            SCOPE_VALID=false
-            MATCHED_CONSTRAINT=""
 
             VERSION_COUNT=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions | length" "$APPROVED_LIST" 2>/dev/null || echo "0")
 
             for ((i=0; i<VERSION_COUNT; i++)); do
                 CONSTRAINT=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[$i].version" "$APPROVED_LIST" 2>/dev/null)
 
-                if check_version_constraint "$MODULE" "$VERSION" "$CONSTRAINT"; then
+                if check_version_constraint "$VERSION" "$CONSTRAINT"; then
                     ALLOWED_SCOPES=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[$i].allowed_scopes[]" "$APPROVED_LIST" 2>/dev/null || echo "")
 
                     if printf '%s\n' "$ALLOWED_SCOPES" | grep -Fxq '*' || \
                        printf '%s\n' "$ALLOWED_SCOPES" | grep -Fxq "$REQUIRED_SCOPE"; then
                         MATCH_FOUND=true
-                        SCOPE_VALID=true
-                        MATCHED_CONSTRAINT="$CONSTRAINT"
                         echo "  ✅ APPROVED: Matches constraint $CONSTRAINT with valid scope"
                         echo "$MODULE $VERSION - Approved (constraint: $CONSTRAINT)" >> /tmp/validated_deps.txt
                         echo "APPROVED|$MODULE|$VERSION|Approved (constraint: $CONSTRAINT)" >> /tmp/all_deps_status.txt
                         break
                     else
                         MATCH_FOUND=true
-                        SCOPE_VALID=false
                         SCOPES_LIST=$(echo "$ALLOWED_SCOPES" | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
                         echo "  ❌ SCOPE MISMATCH: Version matches but scope restriction does not allow $REQUIRED_SCOPE usage"
                         echo "$MODULE $VERSION - Scope mismatch (allowed scopes: $ALLOWED_SCOPES)" >> /tmp/unapproved_deps.txt
@@ -251,29 +245,24 @@ for GO_MOD in $CHANGED_GO_MODS; do
                 echo "UNAPPROVED|$MODULE|$NEW_VERSION (was $OLD_VERSION)|Module not found in dependency registry" >> /tmp/all_deps_status.txt
             else
                 MATCH_FOUND=false
-                SCOPE_VALID=false
-                MATCHED_CONSTRAINT=""
 
                 VERSION_COUNT=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions | length" "$APPROVED_LIST" 2>/dev/null || echo "0")
 
                 for ((i=0; i<VERSION_COUNT; i++)); do
                     CONSTRAINT=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[$i].version" "$APPROVED_LIST" 2>/dev/null)
 
-                    if check_version_constraint "$MODULE" "$NEW_VERSION" "$CONSTRAINT"; then
+                    if check_version_constraint "$NEW_VERSION" "$CONSTRAINT"; then
                         ALLOWED_SCOPES=$(yq eval ".dependencies[] | select(.module == \"$MODULE\") | .versions[$i].allowed_scopes[]" "$APPROVED_LIST" 2>/dev/null || echo "")
 
                         if printf '%s\n' "$ALLOWED_SCOPES" | grep -Fxq '*' || \
                            printf '%s\n' "$ALLOWED_SCOPES" | grep -Fxq "$REQUIRED_SCOPE"; then
                             MATCH_FOUND=true
-                            SCOPE_VALID=true
-                            MATCHED_CONSTRAINT="$CONSTRAINT"
                             echo "  ✅ APPROVED: Matches constraint $CONSTRAINT with valid scope"
                             echo "$MODULE $OLD_VERSION -> $NEW_VERSION - Approved (constraint: $CONSTRAINT)" >> /tmp/validated_deps.txt
                             echo "APPROVED|$MODULE|$NEW_VERSION (was $OLD_VERSION)|Approved (constraint: $CONSTRAINT)" >> /tmp/all_deps_status.txt
                             break
                         else
                             MATCH_FOUND=true
-                            SCOPE_VALID=false
                             SCOPES_LIST=$(echo "$ALLOWED_SCOPES" | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
                             echo "  ❌ SCOPE MISMATCH: Version matches but scope restriction does not allow $REQUIRED_SCOPE usage"
                             echo "$MODULE $NEW_VERSION - Scope mismatch (allowed scopes: $ALLOWED_SCOPES)" >> /tmp/unapproved_deps.txt
