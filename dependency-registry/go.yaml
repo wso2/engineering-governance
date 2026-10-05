@@ -605,6 +605,7 @@ dependencies:
         allowed_scopes:
           - api-platform
           - wso2cloud
+          - thunderid
 
   - module: k8s.io/apimachinery
     versions:
@@ -612,6 +613,7 @@ dependencies:
         allowed_scopes:
           - api-platform
           - wso2cloud
+          - thunderid
 
   - module: k8s.io/cli-runtime
     versions:
@@ -632,6 +634,7 @@ dependencies:
         allowed_scopes:
           - wso2cloud
           - api-platform
+          - thunderid
 
   - module: sigs.k8s.io/gateway-api
     versions:
