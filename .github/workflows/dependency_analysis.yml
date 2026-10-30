@@ -1,5 +1,3 @@
-# SECURITY: Uses pull_request_target; do not checkout or execute PR code in this workflow.
-# Keep permissions: {} exactly as-is. Avoid adding actions/checkout here in the future.
 name: Claude Code • Dependency Analysis
 
 on:
@@ -25,19 +23,15 @@ jobs:
       - name: Prepare system prompt with environment variables
         id: prepare_prompt
         run: |
-          # Install envsubst if not available
           if ! command -v envsubst &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y gettext-base
           fi
 
-          # Set environment variables
           export PR_NUMBER="${{ github.event.pull_request.number }}"
           export REPOSITORY="${{ github.repository }}"
 
-          # Substitute variables in system prompt from trusted base
           SYSTEM_PROMPT=$(envsubst < ${{ github.workspace }}/.github/claude/system_prompt.txt)
 
-          # Save to GitHub environment
           echo "SYSTEM_PROMPT<<EOF" >> $GITHUB_ENV
           echo "$SYSTEM_PROMPT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -52,5 +46,69 @@ jobs:
           track_progress: false
           use_sticky_comment: false
           claude_args: |
-            --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,mcp__github__create_issue_comment,mcp__github__add_issue_comment,Read"
+            --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,Read"
             --model claude-haiku-4-5-20251001
+            --max-turns 50
+
+      - name: Extract analysis report from agent output
+        id: extract_report
+        if: always()
+        env:
+          EXECUTION_FILE: ${{ steps.run_claude.outputs.execution_file }}
+        run: |
+          set -euo pipefail
+
+          REPORT=""
+          if [ -n "${EXECUTION_FILE:-}" ] && [ -f "$EXECUTION_FILE" ]; then
+            REPORT=$(jq -rs '
+              (if (.[0] | type) == "array" then .[0] else . end) as $events
+              | ( [ $events[] | select(.type == "result")    | .result ] | last )
+                // ( [ $events[] | select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text ] | last )
+                // empty
+            ' "$EXECUTION_FILE" || true)
+          fi
+
+          MARKER='<!-- dependency-analysis-report -->'
+          if [ -n "$REPORT" ] && printf '%s' "$REPORT" | grep -qF "$MARKER"; then
+            REPORT=$(printf '%s' "$REPORT" | awk 'index($0, "<!-- dependency-analysis-report -->"){f=1} f{print}')
+          else
+            if [ -n "$REPORT" ]; then
+              echo "::warning::Agent output did not contain the report marker; discarding and posting a failure notice instead."
+            fi
+            REPORT=""
+          fi
+
+          if [ -z "$REPORT" ]; then
+            REPORT=$'<!-- dependency-analysis-report -->\n⚠️ Dependency analysis could not be completed.\n\nThe analysis agent did not produce a valid report (it may have stopped early with a progress message). Check the workflow run logs for details.'
+          fi
+
+          ARTIFACT_DIR="$RUNNER_TEMP/dependency-analysis"
+          mkdir -p "$ARTIFACT_DIR"
+          printf '%s' "$REPORT" > "$ARTIFACT_DIR/dependency-report.md"
+          if [ -n "${EXECUTION_FILE:-}" ] && [ -f "$EXECUTION_FILE" ]; then
+            cp "$EXECUTION_FILE" "$ARTIFACT_DIR/execution-log.json"
+          fi
+
+          echo "artifact_dir=$ARTIFACT_DIR" >> "$GITHUB_OUTPUT"
+          echo "report_path=$ARTIFACT_DIR/dependency-report.md" >> "$GITHUB_OUTPUT"
+
+      - name: Save analysis report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-analysis-report-pr-${{ github.event.pull_request.number }}
+          path: ${{ steps.extract_report.outputs.artifact_dir }}
+          retention-days: 1
+          if-no-files-found: warn
+
+      - name: Post analysis report as PR comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+          REPORT_PATH: ${{ steps.extract_report.outputs.report_path }}
+        run: |
+          set -euo pipefail
+
+          gh pr comment "$PR_NUMBER" --repo "$REPOSITORY" --body-file "$REPORT_PATH"
