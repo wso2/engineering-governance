@@ -304,6 +304,7 @@ dependencies:
       - version: ">=v2.0.1"
         allowed_scopes:
           - thunderid
+          - identity-platform
 
   - module: charm.land/huh/v2
     versions:
@@ -707,6 +708,7 @@ dependencies:
       - version: ">=v0.45.0"
         allowed_scopes:
           - api-platform
+          - identity-platform
 
   - module: golang.org/x/mod
     versions:
@@ -761,3 +763,33 @@ dependencies:
       - version: ">=v1.20.3"
         allowed_scopes:
           - api-platform
+
+  - module: github.com/zalando/go-keyring
+    versions:
+      - version: ">=v0.2.8"
+        allowed_scopes:
+          - identity-platform
+
+  - module: go.yaml.in/yaml/v3
+    versions:
+      - version: ">=v3.0.5"
+        allowed_scopes:
+          - identity-platform
+
+  - module: github.com/spf13/viper
+    versions:
+      - version: ">=v1.21.0"
+        allowed_scopes:
+          - identity-platform
+
+  - module: github.com/nicksnyder/go-i18n/v2
+    versions:
+      - version: ">=v2.7.0"
+        allowed_scopes:
+          - identity-platform
+
+  - module: golang.design/x/clipboard
+    versions:
+      - version: ">=v0.11.0"
+        allowed_scopes:
+          - identity-platform
