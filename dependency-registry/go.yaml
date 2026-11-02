@@ -776,12 +776,6 @@ dependencies:
         allowed_scopes:
           - identity-platform
 
-  - module: github.com/spf13/viper
-    versions:
-      - version: ">=v1.21.0"
-        allowed_scopes:
-          - identity-platform
-
   - module: github.com/nicksnyder/go-i18n/v2
     versions:
       - version: ">=v2.7.0"
