@@ -790,7 +790,7 @@ dependencies:
 
   - module: golang.org/x/sys
     versions:
-      - version: ">=v0.42.0"
+      - version: ">=v0.44.0"
         allowed_scopes:
           - wso2-cli
 
