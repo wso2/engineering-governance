@@ -492,7 +492,14 @@ dependencies:
     versions:
       - version: ">=v1.19.28"
         allowed_scopes:
+          - wso2cloud
           - api-platform
+
+  - module: github.com/aws/aws-sdk-go-v2/service/ecr
+    versions:
+      - version: ">=v1.67.2"
+        allowed_scopes:
+          - wso2cloud
 
   - module: github.com/aws/aws-sdk-go-v2/service/bedrockruntime
     versions:
@@ -541,12 +548,20 @@ dependencies:
       - version: ">=v1.48.0"
         allowed_scopes:
           - wso2cloud
+          - agent-manager
 
   - module: github.com/nats-io/nats-server/v2
     versions:
       - version: ">=v2.12.6"
         allowed_scopes:
           - wso2cloud
+          - agent-manager
+
+  - module: github.com/nicholas-fedor/shoutrrr
+    versions:
+      - version: "v0.18.0"
+        allowed_scopes:
+          - agent-manager
 
   - module: github.com/oapi-codegen/runtime
     versions:
