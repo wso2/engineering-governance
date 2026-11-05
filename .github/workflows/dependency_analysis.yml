@@ -3,7 +3,7 @@ name: Claude Code • Dependency Analysis
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
-    paths:
+    paths: 
       - 'dependency-registry/go.yaml'
 
 permissions: {}
@@ -48,7 +48,6 @@ jobs:
           claude_args: |
             --allowedTools "WebFetch,WebSearch,mcp__github__get_pull_request,mcp__github__get_file_contents,Read"
             --model claude-haiku-4-5-20251001
-            --max-turns 50
 
       - name: Extract analysis report from agent output
         id: extract_report
