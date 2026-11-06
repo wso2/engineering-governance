@@ -558,7 +558,7 @@ dependencies:
 
   - module: github.com/nicholas-fedor/shoutrrr
     versions:
-      - version: "v0.18.0"
+      - version: ">=v0.18.0"
         allowed_scopes:
           - agent-manager
 
