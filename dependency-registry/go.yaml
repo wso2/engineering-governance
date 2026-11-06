@@ -494,6 +494,12 @@ dependencies:
           - wso2cloud
           - api-platform
 
+  - module: github.com/aws/aws-sdk-go-v2/service/acm
+    versions:
+      - version: ">=v1.51.1"
+        allowed_scopes:
+          - wso2cloud
+
   - module: github.com/aws/aws-sdk-go-v2/service/ecr
     versions:
       - version: ">=v1.67.2"
@@ -511,6 +517,7 @@ dependencies:
       - version: ">=v1.44.0"
         allowed_scopes:
           - api-platform
+          - wso2cloud
 
   - module: github.com/aws/aws-sdk-go-v2/service/marketplaceentitlementservice
     versions:
