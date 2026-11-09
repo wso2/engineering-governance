@@ -522,7 +522,7 @@ dependencies:
 
   - module: github.com/aws/aws-sdk-go-v2/service/marketplaceagreement
     versions:
-      - version: ">=v1.30.4"
+      - version: ">=v1.30.8"
         allowed_scopes:
           - wso2cloud
 
