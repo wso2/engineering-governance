@@ -607,6 +607,7 @@ dependencies:
         allowed_scopes:
           - wso2cloud
           - api-platform
+          - identity-platform
 
   - module: github.com/testcontainers/testcontainers-go/modules/postgres
     versions:
