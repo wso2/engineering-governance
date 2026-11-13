@@ -544,6 +544,18 @@ dependencies:
         allowed_scopes:
           - wso2cloud
 
+  - module: github.com/Azure/azure-sdk-for-go/sdk/azcore
+    versions:
+      - version: ">=v1.24.0"
+        allowed_scopes:
+          - api-platform
+
+  - module: github.com/Azure/azure-sdk-for-go/sdk/azidentity
+    versions:
+      - version: ">=v1.15.0"
+        allowed_scopes:
+          - api-platform
+
   - module: github.com/cloudevents/sdk-go/v2
     versions:
       - version: ">=v2.16.2"
