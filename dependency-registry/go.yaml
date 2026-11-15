@@ -304,6 +304,7 @@ dependencies:
       - version: ">=v2.0.1"
         allowed_scopes:
           - thunderid
+          - identity-platform
 
   - module: charm.land/huh/v2
     versions:
@@ -494,6 +495,12 @@ dependencies:
           - wso2cloud
           - api-platform
 
+  - module: github.com/aws/aws-sdk-go-v2/service/acm
+    versions:
+      - version: ">=v1.51.1"
+        allowed_scopes:
+          - wso2cloud
+
   - module: github.com/aws/aws-sdk-go-v2/service/ecr
     versions:
       - version: ">=v1.67.2"
@@ -511,6 +518,13 @@ dependencies:
       - version: ">=v1.44.0"
         allowed_scopes:
           - api-platform
+          - wso2cloud
+
+  - module: github.com/aws/aws-sdk-go-v2/service/marketplaceagreement
+    versions:
+      - version: ">=v1.30.8"
+        allowed_scopes:
+          - wso2cloud
 
   - module: github.com/aws/aws-sdk-go-v2/service/marketplaceentitlementservice
     versions:
@@ -530,6 +544,18 @@ dependencies:
         allowed_scopes:
           - wso2cloud
 
+  - module: github.com/Azure/azure-sdk-for-go/sdk/azcore
+    versions:
+      - version: ">=v1.24.0"
+        allowed_scopes:
+          - api-platform
+
+  - module: github.com/Azure/azure-sdk-for-go/sdk/azidentity
+    versions:
+      - version: ">=v1.15.0"
+        allowed_scopes:
+          - api-platform
+
   - module: github.com/cloudevents/sdk-go/v2
     versions:
       - version: ">=v2.16.2"
@@ -547,12 +573,20 @@ dependencies:
       - version: ">=v1.48.0"
         allowed_scopes:
           - wso2cloud
+          - agent-manager
 
   - module: github.com/nats-io/nats-server/v2
     versions:
       - version: ">=v2.12.6"
         allowed_scopes:
           - wso2cloud
+          - agent-manager
+
+  - module: github.com/nicholas-fedor/shoutrrr
+    versions:
+      - version: ">=v0.18.0"
+        allowed_scopes:
+          - agent-manager
 
   - module: github.com/oapi-codegen/runtime
     versions:
@@ -585,6 +619,7 @@ dependencies:
         allowed_scopes:
           - wso2cloud
           - api-platform
+          - identity-platform
 
   - module: github.com/testcontainers/testcontainers-go/modules/postgres
     versions:
@@ -715,6 +750,7 @@ dependencies:
         allowed_scopes:
           - api-platform
           - wso2-cli
+          - identity-platform
 
   - module: golang.org/x/mod
     versions:
@@ -798,10 +834,24 @@ dependencies:
     versions:
       - version: ">=v0.2.8"
         allowed_scopes:
+          - identity-platform
           - wso2-cli
 
   - module: go.yaml.in/yaml/v3
     versions:
-      - version: ">=v3.0.5"
+      - version: ">=v3.0.6"
         allowed_scopes:
+          - identity-platform
           - wso2-cli
+
+  - module: github.com/nicksnyder/go-i18n/v2
+    versions:
+      - version: ">=v2.7.0"
+        allowed_scopes:
+          - identity-platform
+
+  - module: golang.design/x/clipboard
+    versions:
+      - version: ">=v0.11.0"
+        allowed_scopes:
+          - identity-platform
