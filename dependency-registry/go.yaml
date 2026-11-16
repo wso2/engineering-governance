@@ -808,25 +808,25 @@ dependencies:
 
   - module: github.com/coreos/go-oidc/v3
     versions:
-      - version: ">=v3.20.0"
+      - version: ">=v3.21.0"
         allowed_scopes:
           - wso2-cli
 
   - module: github.com/go-jose/go-jose/v4
     versions:
-      - version: ">=v4.1.4"
+      - version: ">=v4.1.9"
         allowed_scopes:
           - wso2-cli
 
   - module: golang.org/x/oauth2
     versions:
-      - version: ">=v0.36.0"
+      - version: ">=v0.38.0"
         allowed_scopes:
           - wso2-cli
 
   - module: golang.org/x/sys
     versions:
-      - version: ">=v0.44.0"
+      - version: ">=v0.50.0"
         allowed_scopes:
           - wso2-cli
 
