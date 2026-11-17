@@ -95,6 +95,12 @@ dependencies:
         allowed_scopes:
           - "*"
 
+  - module: github.com/go-sql-driver/mysql
+    versions:
+      - version: ">=v1.9.3"
+        allowed_scopes:
+          - "*"
+
   - module: github.com/jmoiron/sqlx
     versions:
       - version: ">=v1.4.0"
