@@ -837,6 +837,6 @@ dependencies:
 
   - module: go.temporal.io/server
     versions:
-      - version: ">=v1.32.1"
+      - version: ">=v1.32.2"
         allowed_scopes:
           - "integrator"
