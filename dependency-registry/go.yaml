@@ -834,3 +834,9 @@ dependencies:
       - version: ">=v0.11.0"
         allowed_scopes:
           - identity-platform
+
+  - module: go.temporal.io/server
+    versions:
+      - version: ">=v1.32.2"
+        allowed_scopes:
+          - "integrator"
