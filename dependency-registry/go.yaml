@@ -97,7 +97,7 @@ dependencies:
 
   - module: github.com/go-sql-driver/mysql
     versions:
-      - version: ">=v1.9.3"
+      - version: ">=v1.10.1"
         allowed_scopes:
           - "*"
 
