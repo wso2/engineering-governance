@@ -1,0 +1,284 @@
+name: FOSSA SCA Scan
+description: Run FOSSA scans in GitHub Actions with optional test, diff, report, and vulnerability-gate support.
+
+inputs:
+  api-key:
+    description: FOSSA API key.
+    required: true
+  run-tests:
+    description: Whether to run `fossa test` after analysis.
+    required: false
+    default: "false"
+  generate-report:
+    description: Report format to generate with `fossa report attribution --format`.
+    required: false
+    default: ""
+  test-diff-revision:
+    description: Revision to pass to `fossa test --diff`.
+    required: false
+    default: ""
+  branch:
+    description: Branch name reported to FOSSA. Defaults to the current GitHub ref.
+    required: false
+    default: ""
+  project:
+    description: Project name passed to FOSSA CLI.
+    required: false
+    default: ""
+  endpoint:
+    description: FOSSA endpoint URL. Defaults to `https://app.fossa.com`.
+    required: false
+    default: "https://app.fossa.com"
+  debug:
+    description: Whether to run FOSSA commands in debug mode.
+    required: false
+    default: "false"
+  working-directory:
+    description: Directory that contains the project to analyze.
+    required: false
+    default: "."
+  fail-on-vulnerabilities:
+    description: Whether to query the FOSSA issues API and fail on active high or critical vulnerabilities.
+    required: false
+    default: "false"
+  repo-name:
+    description: Repository name used when querying FOSSA vulnerability status. Defaults to the current repository name.
+    required: false
+    default: ""
+  github-org:
+    description: GitHub organization or owner used when querying FOSSA vulnerability status. Defaults to the current repository owner.
+    required: false
+    default: ""
+  scope-id-prefix:
+    description: FOSSA project scope prefix used for the vulnerability status lookup.
+    required: false
+    default: ""
+
+outputs:
+  revision:
+    description: Revision detected by FOSSA analyze.
+    value: ${{ steps.scan.outputs.revision }}
+  active-count:
+    description: Active high and critical vulnerability count returned by the FOSSA API.
+    value: ${{ steps.scan.outputs.active-count }}
+  report:
+    description: Generated attribution report content, if requested.
+    value: ${{ steps.scan.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - name: Run FOSSA SCA scan
+      id: scan
+      shell: bash
+      env:
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_RUN_TESTS: ${{ inputs.run-tests }}
+        INPUT_GENERATE_REPORT: ${{ inputs.generate-report }}
+        INPUT_TEST_DIFF_REVISION: ${{ inputs.test-diff-revision }}
+        INPUT_BRANCH: ${{ inputs.branch }}
+        INPUT_PROJECT: ${{ inputs.project }}
+        INPUT_ENDPOINT: ${{ inputs.endpoint }}
+        INPUT_DEBUG: ${{ inputs.debug }}
+        INPUT_WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        INPUT_FAIL_ON_VULNERABILITIES: ${{ inputs.fail-on-vulnerabilities }}
+        INPUT_REPO_NAME: ${{ inputs.repo-name }}
+        INPUT_GITHUB_ORG: ${{ inputs.github-org }}
+        INPUT_SCOPE_ID_PREFIX: ${{ inputs.scope-id-prefix }}
+      run: |
+        set -euo pipefail
+
+        run_tests="${INPUT_RUN_TESTS:-false}"
+        generate_report="${INPUT_GENERATE_REPORT:-}"
+        test_diff_revision="${INPUT_TEST_DIFF_REVISION:-}"
+        branch="${INPUT_BRANCH:-}"
+        project="${INPUT_PROJECT:-}"
+        endpoint="${INPUT_ENDPOINT:-https://app.fossa.com}"
+        debug="${INPUT_DEBUG:-false}"
+        working_directory="${INPUT_WORKING_DIRECTORY:-.}"
+        fail_on_vulnerabilities="${INPUT_FAIL_ON_VULNERABILITIES:-false}"
+        repo_name="${INPUT_REPO_NAME:-}"
+        github_org="${INPUT_GITHUB_ORG:-}"
+        scope_id_prefix="${INPUT_SCOPE_ID_PREFIX:-}"
+        fossa_cli_version="v3.17.10"
+
+        if [[ -z "${branch}" ]]; then
+          branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-}}"
+        fi
+
+        if [[ -z "${repo_name}" && -n "${GITHUB_REPOSITORY:-}" ]]; then
+          repo_name="${GITHUB_REPOSITORY##*/}"
+        fi
+
+        if [[ -z "${github_org}" && -n "${GITHUB_REPOSITORY_OWNER:-}" ]]; then
+          github_org="${GITHUB_REPOSITORY_OWNER}"
+        fi
+
+        if [[ "${endpoint}" =~ ^https?:// ]]; then
+          endpoint_url="${endpoint}"
+        else
+          endpoint_url="https://${endpoint}"
+        fi
+
+        echo "Installing fossa-cli..."
+        echo "Using fossa-cli ${fossa_cli_version}"
+        curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash -s -- "${fossa_cli_version}"
+
+        analyze_args=(
+          analyze
+          --fossa-api-key "${INPUT_API_KEY}"
+          --unpack-archives
+          --endpoint "${endpoint}"
+        )
+
+        if [[ -n "${branch}" ]]; then
+          analyze_args+=(-b "${branch}")
+        fi
+
+        if [[ -n "${project}" ]]; then
+          analyze_args+=(--project "${project}")
+        fi
+
+        if [[ "${debug}" == "true" ]]; then
+          analyze_args+=(--debug)
+        fi
+
+        echo "Running FOSSA scan..."
+        cd "${GITHUB_WORKSPACE}/${working_directory}"
+
+        set +e
+        analyze_output="$(
+          fossa "${analyze_args[@]}" 2>&1
+        )"
+        analyze_status=$?
+        set -e
+        echo "${analyze_output}"
+
+        if (( analyze_status != 0 )); then
+          echo "fossa analyze failed with exit code ${analyze_status}."
+          exit "${analyze_status}"
+        fi
+
+        revision="$(
+          printf '%s\n' "${analyze_output}" |
+            sed -n 's/.*Using revision: `\([a-f0-9]\+\)`.*/\1/p' |
+            tail -n 1
+        )"
+
+        if [[ -z "${revision}" ]]; then
+          revision="${GITHUB_SHA:-}"
+          echo "Could not extract revision from FOSSA output. Falling back to GITHUB_SHA: ${revision}"
+        fi
+
+        echo "revision=${revision}" >> "${GITHUB_OUTPUT}"
+        echo "active-count=" >> "${GITHUB_OUTPUT}"
+
+        if [[ "${run_tests}" != "true" && -n "${test_diff_revision}" ]]; then
+          echo "Ignoring test-diff-revision because run-tests is not enabled."
+        fi
+
+        if [[ "${run_tests}" == "true" ]]; then
+          test_args=(
+            test
+            --fossa-api-key "${INPUT_API_KEY}"
+            --endpoint "${endpoint}"
+          )
+
+          if [[ -n "${test_diff_revision}" ]]; then
+            test_args+=(--diff "${test_diff_revision}")
+          fi
+
+          if [[ "${debug}" == "true" ]]; then
+            test_args+=(--debug)
+          fi
+
+          set +e
+          test_output="$(
+            fossa "${test_args[@]}" 2>&1
+          )"
+          test_status=$?
+          set -e
+          echo "${test_output}"
+
+          if (( test_status != 0 )); then
+            echo "fossa test failed with exit code ${test_status}."
+            exit "${test_status}"
+          fi
+        fi
+
+        if [[ -n "${generate_report}" ]]; then
+          report_args=(
+            report
+            attribution
+            --format "${generate_report}"
+            --fossa-api-key "${INPUT_API_KEY}"
+            --endpoint "${endpoint}"
+          )
+
+          if [[ "${debug}" == "true" ]]; then
+            report_args+=(--debug)
+          fi
+
+          set +e
+          report_output="$(
+            fossa "${report_args[@]}" 2>&1
+          )"
+          report_status=$?
+          set -e
+
+          if (( report_status != 0 )); then
+            echo "${report_output}"
+            echo "fossa report attribution failed with exit code ${report_status}."
+            exit "${report_status}"
+          fi
+
+          echo "report<<EOF" >> "${GITHUB_OUTPUT}"
+          printf '%s\n' "${report_output}" >> "${GITHUB_OUTPUT}"
+          echo "EOF" >> "${GITHUB_OUTPUT}"
+        fi
+
+        if [[ "${fail_on_vulnerabilities}" != "true" ]]; then
+          echo "Skipping vulnerability status check."
+          exit 0
+        fi
+
+        if [[ -z "${repo_name}" || -z "${github_org}" || -z "${scope_id_prefix}" ]]; then
+          echo "Skipping vulnerability status check because repo-name, github-org, or scope-id-prefix is not set."
+          exit 0
+        fi
+
+        echo "Checking for high and critical vulnerabilities..."
+        response="$(
+          curl --fail --silent --show-error --get \
+            --data "category=vulnerability" \
+            --data "scope[type]=project" \
+            --data-urlencode "scope[id]=${scope_id_prefix}/${github_org}/${repo_name}" \
+            --data "scope[revision]=${revision}" \
+            --data "filter[severity][0]=critical" \
+            --data "filter[severity][1]=high" \
+            -H "Authorization: Bearer ${INPUT_API_KEY}" \
+            "${endpoint_url}/api/v2/issues/statuses"
+        )"
+
+        if [[ -z "${response}" || "${response}" == "null" ]]; then
+          echo "FOSSA API returned an empty response."
+          exit 1
+        fi
+
+        active_count="$(
+          python3 -c 'import json,sys; print(json.load(sys.stdin).get("issues", {}).get("active", ""))' <<< "${response}"
+        )"
+        echo "active-count=${active_count}" >> "${GITHUB_OUTPUT}"
+
+        if ! [[ "${active_count}" =~ ^[0-9]+$ ]]; then
+          echo "Could not read active vulnerability count from the FOSSA API response."
+          echo "${response}"
+          exit 1
+        fi
+
+        if (( active_count > 0 )); then
+          echo "High or critical vulnerabilities found in the project."
+          exit 1
+        fi
+
+        echo "No active high or critical vulnerabilities found in the project."
