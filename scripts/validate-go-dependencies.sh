@@ -71,6 +71,58 @@ check_version_constraint() {
     fi
 }
 
+# Prints -1, 0 or 1 as $1 is lower than, equal to or higher than $2 by semantic version precedence:
+# a prerelease ranks below its release, and build metadata (such as +incompatible) is ignored.
+compare_semver() {
+    local a="${1%%+*}" b="${2%%+*}"
+    local a_core="${a%%-*}" b_core="${b%%-*}"
+    local a_pre="" b_pre=""
+    [[ "$a" == *-* ]] && a_pre="${a#*-}"
+    [[ "$b" == *-* ]] && b_pre="${b#*-}"
+    if ! [[ "$a_core" =~ ^[0-9]+(\.[0-9]+){0,2}$ && "$b_core" =~ ^[0-9]+(\.[0-9]+){0,2}$ ]]; then
+        return 1
+    fi
+
+    local -a a_parts b_parts
+    IFS=. read -ra a_parts <<< "$a_core"
+    IFS=. read -ra b_parts <<< "$b_core"
+    local i
+    for i in 0 1 2; do
+        local x="${a_parts[i]:-0}" y="${b_parts[i]:-0}"
+        if ((10#$x < 10#$y)); then echo -1; return; fi
+        if ((10#$x > 10#$y)); then echo 1; return; fi
+    done
+
+    if [ "$a_pre" = "$b_pre" ]; then echo 0; return; fi
+    if [ -z "$a_pre" ]; then echo 1; return; fi
+    if [ -z "$b_pre" ]; then echo -1; return; fi
+
+    local -a a_ids b_ids
+    IFS=. read -ra a_ids <<< "$a_pre"
+    IFS=. read -ra b_ids <<< "$b_pre"
+    local n=${#a_ids[@]}
+    ((${#b_ids[@]} > n)) && n=${#b_ids[@]}
+    for ((i = 0; i < n; i++)); do
+        if ((i >= ${#a_ids[@]})); then echo -1; return; fi
+        if ((i >= ${#b_ids[@]})); then echo 1; return; fi
+        local x="${a_ids[i]}" y="${b_ids[i]}"
+        [ "$x" = "$y" ] && continue
+        if [[ "$x" =~ ^[0-9]+$ && "$y" =~ ^[0-9]+$ ]]; then
+            if ((10#$x < 10#$y)); then echo -1; else echo 1; fi
+        elif [[ "$x" =~ ^[0-9]+$ ]]; then
+            echo -1
+        elif [[ "$y" =~ ^[0-9]+$ ]]; then
+            echo 1
+        elif [[ "$x" < "$y" ]]; then
+            echo -1
+        else
+            echo 1
+        fi
+        return
+    done
+    echo 0
+}
+
 check_single_constraint() {
     local version=$1
     local constraint=$2
@@ -83,20 +135,24 @@ check_single_constraint() {
         return 1
     fi
 
+    local cmp
+    if ! cmp=$(compare_semver "$version" "$constraint_version"); then
+        echo "Invalid version: $version against $constraint" >&2
+        return 1
+    fi
+
     case "$operator" in
         ">=")
-            [ "$(printf '%s\n' "$constraint_version" "$version" | sort -V | head -n1)" = "$constraint_version" ]
+            [ "$cmp" -ge 0 ]
             ;;
         "<=")
-            [ "$(printf '%s\n' "$version" "$constraint_version" | sort -V | head -n1)" = "$version" ]
+            [ "$cmp" -le 0 ]
             ;;
         ">")
-            [ "$(printf '%s\n' "$constraint_version" "$version" | sort -V | head -n1)" = "$constraint_version" ] && \
-            [ "$version" != "$constraint_version" ]
+            [ "$cmp" -gt 0 ]
             ;;
         "<")
-            [ "$(printf '%s\n' "$version" "$constraint_version" | sort -V | head -n1)" = "$version" ] && \
-            [ "$version" != "$constraint_version" ]
+            [ "$cmp" -lt 0 ]
             ;;
         "=")
             [ "$version" = "$constraint_version" ]
