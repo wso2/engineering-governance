@@ -840,3 +840,9 @@ dependencies:
       - version: ">=v1.32.2"
         allowed_scopes:
           - "integrator"
+
+  - module: github.com/sijms/go-ora/v2
+    versions:
+      - version: ">=v2.9.0"
+        allowed_scopes:
+          - identity-platform
