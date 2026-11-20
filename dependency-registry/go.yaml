@@ -755,6 +755,7 @@ dependencies:
       - version: ">=v0.45.0"
         allowed_scopes:
           - api-platform
+          - wso2-cli
           - identity-platform
 
   - module: golang.org/x/mod
@@ -811,17 +812,43 @@ dependencies:
         allowed_scopes:
           - api-platform
 
+  - module: github.com/coreos/go-oidc/v3
+    versions:
+      - version: ">=v3.21.0"
+        allowed_scopes:
+          - wso2-cli
+
+  - module: github.com/go-jose/go-jose/v4
+    versions:
+      - version: ">=v4.1.9"
+        allowed_scopes:
+          - wso2-cli
+
+  - module: golang.org/x/oauth2
+    versions:
+      - version: ">=v0.38.0"
+        allowed_scopes:
+          - wso2-cli
+
+  - module: golang.org/x/sys
+    versions:
+      - version: ">=v0.50.0"
+        allowed_scopes:
+          - wso2-cli
+
   - module: github.com/zalando/go-keyring
     versions:
       - version: ">=v0.2.8"
         allowed_scopes:
           - identity-platform
+          - wso2-cli
 
   - module: go.yaml.in/yaml/v3
     versions:
       - version: ">=v3.0.6"
         allowed_scopes:
           - identity-platform
+          - wso2-cli
 
   - module: github.com/nicksnyder/go-i18n/v2
     versions:
